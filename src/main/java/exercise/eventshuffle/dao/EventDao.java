@@ -8,4 +8,7 @@ public interface EventDao {
 
     List<Event> findEventList();
 
+    Event findById(int id);
+
+    void save(Event event);
 }

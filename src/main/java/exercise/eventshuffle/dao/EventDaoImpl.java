@@ -23,4 +23,14 @@ public class EventDaoImpl implements EventDao {
         TypedQuery<Event> query = entityManager.createQuery("from Event", Event.class);
         return query.getResultList();
     }
+
+    @Override
+    public Event findById(int id) {
+        return entityManager.find(Event.class, id);
+    }
+
+    @Override
+    public void save(Event event) {
+        entityManager.persist(event);
+    }
 }
