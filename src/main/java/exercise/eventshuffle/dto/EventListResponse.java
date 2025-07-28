@@ -11,5 +11,5 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class EventListResponse {
-    private List<EventDto> events;
+    private List<CommonEventDto> events;
 }

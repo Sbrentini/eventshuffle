@@ -2,7 +2,7 @@ package exercise.eventshuffle.controller;
 
 import exercise.eventshuffle.dto.CreateEventRequest;
 import exercise.eventshuffle.dto.EventListResponse;
-import exercise.eventshuffle.entity.Event;
+import exercise.eventshuffle.dto.EventDto;
 import exercise.eventshuffle.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +25,8 @@ public class EventController {
     }
 
     @GetMapping("/event/{id}")
-    public Event findEvent(@PathVariable int id) {
-        Event event = eventService.findById(id);
-
-        if (event == null) {
-            throw new RuntimeException("Event not found by Id: " + id);
-        }
-        return event;
+    public EventDto findEventById(@PathVariable int id) {
+        return eventService.findById(id);
     }
 
     @PostMapping("/event")
