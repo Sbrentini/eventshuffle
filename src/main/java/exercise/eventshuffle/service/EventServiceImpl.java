@@ -7,6 +7,7 @@ import exercise.eventshuffle.dto.*;
 import exercise.eventshuffle.entity.Event;
 import exercise.eventshuffle.entity.EventDate;
 import exercise.eventshuffle.entity.Person;
+import exercise.eventshuffle.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +50,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventDao.findById(eventId);
 
         if (event == null) {
-            throw new RuntimeException("Event not found by Id: " + eventId);
+            throw new NotFoundException("Event not found by Id: " + eventId);
         }
 
         EventDto dto = new EventDto();
@@ -105,6 +106,11 @@ public class EventServiceImpl implements EventService {
         Person person = new Person(createVoteDto.getName());
 
         List<EventDate> eventDateList = eventDateDao.findByEventIdAndDate(eventId, createVoteDto.getVotes());
+
+        if (eventDateList.isEmpty()) {
+            throw new NotFoundException("There were no eventDates for eventId: " + eventId);
+        }
+
         person.setSuitableEventDates(eventDateList);
 
         for (EventDate eventDate : eventDateList) {
@@ -119,6 +125,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public VoteResultsDto findVoteResults(long eventId) {
         List<EventDate> eventDateList = eventDateDao.findEventDateByEventId(eventId);
+
+        if (eventDateList.isEmpty()) {
+            throw new NotFoundException("There were no eventDates for eventId: " + eventId);
+        }
 
         Set<Long> allVoterIds = new HashSet<>();
         for (EventDate eventDate : eventDateList) {
