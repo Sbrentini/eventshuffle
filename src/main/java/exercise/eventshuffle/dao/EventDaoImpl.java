@@ -25,8 +25,15 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public Event findById(int id) {
+    public Event findById(long id) {
         return entityManager.find(Event.class, id);
+    }
+
+    @Override
+    public String findNameByEventId(long eventId) {
+        TypedQuery<String> query = entityManager.createQuery("select e.name from Event e where e.id=:eventId", String.class);
+        query.setParameter("eventId", eventId);
+        return query.getSingleResult();
     }
 
     @Override

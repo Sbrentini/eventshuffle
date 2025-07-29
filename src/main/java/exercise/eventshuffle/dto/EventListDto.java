@@ -10,6 +10,6 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class EventListResponseDto {
+public class EventListDto {
     private List<CommonEventDto> events;
 }

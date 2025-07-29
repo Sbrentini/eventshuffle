@@ -1,9 +1,6 @@
 package exercise.eventshuffle.controller;
 
-import exercise.eventshuffle.dto.CreateEventRequestDto;
-import exercise.eventshuffle.dto.CreateVoteRequestDto;
-import exercise.eventshuffle.dto.EventListResponseDto;
-import exercise.eventshuffle.dto.EventDto;
+import exercise.eventshuffle.dto.*;
 import exercise.eventshuffle.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,28 +18,28 @@ public class EventController {
     }
 
     @GetMapping("/event/list")
-    public EventListResponseDto findEventList() {
-        return new EventListResponseDto(eventService.findEventList());
+    public EventListDto findEventList() {
+        return new EventListDto(eventService.findEventList());
     }
 
     @GetMapping("/event/{id}")
-    public EventDto findEventById(@PathVariable int id) {
-        return eventService.findById(id);
+    public EventDto findEventById(@PathVariable long id) {
+        return eventService.findEventById(id);
     }
 
     @PostMapping("/event")
-    public Map<String, Integer> saveNewEvent(@RequestBody CreateEventRequestDto createEventRequestDto) {
-        int id = eventService.save(createEventRequestDto);
-        return Collections.singletonMap("id", id);
+    public Map<String, Long> saveNewEvent(@RequestBody CreateEventDto createEventDto) {
+        long eventId = eventService.save(createEventDto);
+        return Collections.singletonMap("id", eventId);
     }
 
     @PostMapping("/event/{id}/vote")
-    public void saveNewVote(@PathVariable int id, @RequestBody CreateVoteRequestDto createVoteRequestDto) {
-        eventService.saveNewVote(id, createVoteRequestDto);
+    public EventDto saveNewVote(@PathVariable long id, @RequestBody CreateVoteDto createVoteDto) {
+        return eventService.saveNewVote(id, createVoteDto);
     }
 
     @GetMapping("/event/{id}/results")
-    public void findEventDatesSuitableForAllParticipants(@PathVariable int id) {
-
+    public VoteResultsDto findEventDatesSuitableForAllParticipants(@PathVariable long id) {
+        return eventService.findVoteResults(id);
     }
 }

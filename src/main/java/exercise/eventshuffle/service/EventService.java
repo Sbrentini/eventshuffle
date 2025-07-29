@@ -1,9 +1,6 @@
 package exercise.eventshuffle.service;
 
-import exercise.eventshuffle.dto.CreateEventRequestDto;
-import exercise.eventshuffle.dto.CommonEventDto;
-import exercise.eventshuffle.dto.CreateVoteRequestDto;
-import exercise.eventshuffle.dto.EventDto;
+import exercise.eventshuffle.dto.*;
 
 import java.util.List;
 
@@ -11,9 +8,11 @@ public interface EventService {
 
     List<CommonEventDto> findEventList();
 
-    EventDto findById(int id);
+    EventDto findEventById(long eventId);
 
-    int save(CreateEventRequestDto createEventRequestDto);
+    long save(CreateEventDto createEventDto);
 
-    void saveNewVote(int eventId, CreateVoteRequestDto createVoteRequestDto);
+    EventDto saveNewVote(long eventId, CreateVoteDto createVoteDto);
+
+    VoteResultsDto findVoteResults(long eventId);
 }

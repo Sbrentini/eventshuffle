@@ -8,7 +8,7 @@ import java.util.List;
  * Used for JSON request body that is used to save a new event
  */
 @Data
-public class CreateEventRequestDto {
+public class CreateEventDto {
     private String name;
     private List<String> dates;
 }

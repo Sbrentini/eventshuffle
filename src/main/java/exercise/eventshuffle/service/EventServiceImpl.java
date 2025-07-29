@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -43,11 +45,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto findById(int id) {
-        Event event = eventDao.findById(id);
+    public EventDto findEventById(long eventId) {
+        Event event = eventDao.findById(eventId);
 
         if (event == null) {
-            throw new RuntimeException("Event not found by Id: " + id);
+            throw new RuntimeException("Event not found by Id: " + eventId);
         }
 
         EventDto dto = new EventDto();
@@ -56,15 +58,15 @@ public class EventServiceImpl implements EventService {
         List<LocalDate> localDates = event.getEventDateList().stream().map(EventDate::getDate).toList();
         dto.setDates(localDates);
 
-        List<VoteDto> voteDtoList = initVotes(event);
+        List<VoteDto> voteDtoList = initVotes(event.getEventDateList());
 
         dto.setVotes(voteDtoList);
         return dto;
     }
 
-    private static List<VoteDto> initVotes(Event event) {
+    private static List<VoteDto> initVotes(List<EventDate> eventDateList) {
         List<VoteDto> voteDtoList = new ArrayList<>();
-        for (EventDate eventDate : event.getEventDateList()) {
+        for (EventDate eventDate : eventDateList) {
             VoteDto voteDto = new VoteDto();
             voteDto.setDate(eventDate.getDate());
             List<String> voterNames = eventDate.getVoters().stream().map(Person::getName).toList();
@@ -78,13 +80,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public int save(CreateEventRequestDto createEventRequestDto) {
+    public long save(CreateEventDto createEventDto) {
         Event event = new Event();
-        event.setName(createEventRequestDto.getName());
+        event.setName(createEventDto.getName());
 
         List<EventDate> eventDates = new ArrayList<>();
 
-        for (String dateString : createEventRequestDto.getDates()) {
+        for (String dateString : createEventDto.getDates()) {
             EventDate eventDate = new EventDate();
             eventDate.setEvent(event);
             eventDate.setDate(LocalDate.parse(dateString));
@@ -99,10 +101,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public void saveNewVote(int eventId, CreateVoteRequestDto createVoteRequestDto) {
-        Person person = new Person(createVoteRequestDto.getName());
+    public EventDto saveNewVote(long eventId, CreateVoteDto createVoteDto) {
+        Person person = new Person(createVoteDto.getName());
 
-        List<EventDate> eventDateList = eventDateDao.findByEventIdAndDate(eventId, createVoteRequestDto.getVotes());
+        List<EventDate> eventDateList = eventDateDao.findByEventIdAndDate(eventId, createVoteDto.getVotes());
         person.setSuitableEventDates(eventDateList);
 
         for (EventDate eventDate : eventDateList) {
@@ -110,5 +112,40 @@ public class EventServiceImpl implements EventService {
         }
 
         personDao.save(person);
+
+        return findEventById(eventId);
+    }
+
+    @Override
+    public VoteResultsDto findVoteResults(long eventId) {
+        List<EventDate> eventDateList = eventDateDao.findEventDateByEventId(eventId);
+
+        Set<Long> allVoterIds = new HashSet<>();
+        for (EventDate eventDate : eventDateList) {
+            for (Person person : eventDate.getVoters()) {
+                allVoterIds.add(person.getId());
+            }
+        }
+
+        List<VoteDto> voteDtoList = new ArrayList<>();
+
+        if (!allVoterIds.isEmpty()) {
+            for (EventDate eventDate : eventDateList) {
+                Set<Long> currentVoterIds = new HashSet<>();
+                for (Person person : eventDate.getVoters()) {
+                    currentVoterIds.add(person.getId());
+                }
+                if (currentVoterIds.containsAll(allVoterIds)) {
+                    VoteDto voteDto = new VoteDto();
+                    voteDto.setDate(eventDate.getDate());
+                    List<String> voterNames = eventDate.getVoters().stream().map(Person::getName).toList();
+                    voteDto.setPeople(voterNames);
+                    voteDtoList.add(voteDto);
+                }
+            }
+        }
+
+        String eventName = eventDao.findNameByEventId(eventId);
+        return new VoteResultsDto(eventId, eventName, voteDtoList);
     }
 }

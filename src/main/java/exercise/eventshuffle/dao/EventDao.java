@@ -8,7 +8,9 @@ public interface EventDao {
 
     List<Event> findEventList();
 
-    Event findById(int id);
+    Event findById(long id);
+
+    String findNameByEventId(long eventId);
 
     void save(Event event);
 }
