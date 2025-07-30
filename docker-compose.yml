@@ -1,0 +1,12 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: event-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: event_app
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
