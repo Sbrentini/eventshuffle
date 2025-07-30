@@ -20,6 +20,7 @@ import java.util.Set;
 @Service
 public class EventServiceImpl implements EventService {
 
+    public static final String ERROR_EVENT_DATE_NOT_FOUND = "There were no eventDates for eventId: ";
     private EventDao eventDao;
 
     private EventDateDao eventDateDao;
@@ -108,7 +109,7 @@ public class EventServiceImpl implements EventService {
         List<EventDate> eventDateList = eventDateDao.findByEventIdAndDate(eventId, createVoteDto.getVotes());
 
         if (eventDateList.isEmpty()) {
-            throw new NotFoundException("There were no eventDates for eventId: " + eventId);
+            throw new NotFoundException(ERROR_EVENT_DATE_NOT_FOUND + eventId);
         }
 
         person.setSuitableEventDates(eventDateList);
@@ -127,7 +128,7 @@ public class EventServiceImpl implements EventService {
         List<EventDate> eventDateList = eventDateDao.findEventDateByEventId(eventId);
 
         if (eventDateList.isEmpty()) {
-            throw new NotFoundException("There were no eventDates for eventId: " + eventId);
+            throw new NotFoundException(ERROR_EVENT_DATE_NOT_FOUND + eventId);
         }
 
         Set<Long> allVoterIds = new HashSet<>();
