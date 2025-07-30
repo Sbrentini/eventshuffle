@@ -82,7 +82,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public long save(CreateEventDto createEventDto) {
+    public long saveEvent(CreateEventDto createEventDto) {
         Event event = new Event();
         event.setName(createEventDto.getName());
 
@@ -131,21 +131,17 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException(ERROR_EVENT_DATE_NOT_FOUND + eventId);
         }
 
-        Set<Long> allVoterIds = new HashSet<>();
-        for (EventDate eventDate : eventDateList) {
-            for (Person person : eventDate.getVoters()) {
-                allVoterIds.add(person.getId());
-            }
-        }
-
+        Set<Long> allVoterIds = findAllVoterForEvent(eventDateList);
         List<VoteDto> voteDtoList = new ArrayList<>();
 
         if (!allVoterIds.isEmpty()) {
             for (EventDate eventDate : eventDateList) {
+                // Get all voters for an event date
                 Set<Long> currentVoterIds = new HashSet<>();
                 for (Person person : eventDate.getVoters()) {
                     currentVoterIds.add(person.getId());
                 }
+                // Have all voters voted for that date?
                 if (currentVoterIds.containsAll(allVoterIds)) {
                     VoteDto voteDto = new VoteDto();
                     voteDto.setDate(eventDate.getDate());
@@ -158,5 +154,19 @@ public class EventServiceImpl implements EventService {
 
         String eventName = eventDao.findNameByEventId(eventId);
         return new VoteResultsDto(eventId, eventName, voteDtoList);
+    }
+
+    /**
+     * Find all different voters that have voted in an event
+     * @return a Set of voter Ids
+     */
+    private static Set<Long> findAllVoterForEvent(List<EventDate> eventDateList) {
+        Set<Long> allVoterIds = new HashSet<>();
+        for (EventDate eventDate : eventDateList) {
+            for (Person person : eventDate.getVoters()) {
+                allVoterIds.add(person.getId());
+            }
+        }
+        return allVoterIds;
     }
 }

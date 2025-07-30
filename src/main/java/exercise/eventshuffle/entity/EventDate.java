@@ -17,6 +17,9 @@ public class EventDate {
     @Column(name="id")
     private long id;
 
+    /**
+     * What event is the date associated to
+     */
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name="event_id")
     private Event event;
@@ -24,6 +27,9 @@ public class EventDate {
     @Column(name="date")
     private LocalDate date;
 
+    /**
+     * All the people that have voted for this date to be suitable for them
+     */
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name="event_date_vote",
                 joinColumns = @JoinColumn(name="event_date_id"),

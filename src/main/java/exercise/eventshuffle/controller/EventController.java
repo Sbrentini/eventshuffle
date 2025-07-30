@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/event")
 public class EventController {
 
     private EventService eventService;
@@ -17,28 +17,28 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping("/event/list")
+    @GetMapping("/list")
     public EventListDto findEventList() {
         return new EventListDto(eventService.findEventList());
     }
 
-    @GetMapping("/event/{id}")
+    @GetMapping("/{id}")
     public EventDto findEventById(@PathVariable long id) {
         return eventService.findEventById(id);
     }
 
-    @PostMapping("/event")
+    @PostMapping
     public Map<String, Long> saveNewEvent(@RequestBody CreateEventDto createEventDto) {
-        long eventId = eventService.save(createEventDto);
+        long eventId = eventService.saveEvent(createEventDto);
         return Collections.singletonMap("id", eventId);
     }
 
-    @PostMapping("/event/{id}/vote")
+    @PostMapping("/{id}/vote")
     public EventDto saveNewVote(@PathVariable long id, @RequestBody CreateVoteDto createVoteDto) {
         return eventService.saveNewVote(id, createVoteDto);
     }
 
-    @GetMapping("/event/{id}/results")
+    @GetMapping("/{id}/results")
     public VoteResultsDto findEventDatesSuitableForAllParticipants(@PathVariable long id) {
         return eventService.findVoteResults(id);
     }

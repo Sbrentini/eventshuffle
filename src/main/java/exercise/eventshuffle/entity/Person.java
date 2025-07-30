@@ -18,9 +18,15 @@ public class Person {
     @Column(name="id")
     private long id;
 
+    /**
+     * Name of the person
+     */
     @Column(name="name")
     private String name;
 
+    /**
+     * What suitable dates the person has voted for
+     */
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
                 mappedBy = "voters")
     private List<EventDate> suitableEventDates;

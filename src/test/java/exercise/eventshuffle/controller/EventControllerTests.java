@@ -106,7 +106,7 @@ public class EventControllerTests {
         createEventDto.setName("Amusement park");
         createEventDto.setDates(List.of("2025-08-01", "2025-08-02", "2025-08-03"));
 
-        Mockito.when(eventService.save(createEventDto)).thenReturn(expectedId);
+        Mockito.when(eventService.saveEvent(createEventDto)).thenReturn(expectedId);
 
         mockMvc.perform(post("/api/v1/event")
                         .contentType(MediaType.APPLICATION_JSON)
