@@ -10,6 +10,10 @@ the database is initialized with some test data: `sql/test_data.sql`
 #### API documentation 
 - Added Swagger/OpenAPI support for easier REST endpoint exploration.
 
+#### Testing 
+- Created some service layer unit tests
+- Created one e2e test
+
 #### README.md update 
 - Updated readme accordingly with the new changes. 
 
