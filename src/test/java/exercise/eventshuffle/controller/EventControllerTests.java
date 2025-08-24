@@ -33,6 +33,7 @@ public class EventControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    // TODO refactor MockBean away
     @MockBean
     private EventService eventService;
 
@@ -83,12 +84,12 @@ public class EventControllerTests {
      */
     @Test
     void testGetEvent_NotFound() throws Exception {
-        long invalidId = 999L;
+        long notFoundId = 999L;
 
-        Mockito.when(eventService.findEventById(invalidId))
-                .thenThrow(new NotFoundException("Event not found by Id: " + invalidId));
+        Mockito.when(eventService.findEventById(notFoundId))
+                .thenThrow(new NotFoundException("Event not found by Id: " + notFoundId));
 
-        mockMvc.perform(get("/api/v1/event/" + invalidId))
+        mockMvc.perform(get("/api/v1/event/" + notFoundId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(404))
