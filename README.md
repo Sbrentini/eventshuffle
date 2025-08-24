@@ -41,10 +41,16 @@ the database is initialized with some test data: `sql/test_data.sql`
   - Swagger UI allows you to view all endpoints, try requests, and see responses. The database will already contain some data for testing. 
 
 ## Tests
-There are three very basic tests found in src/test/java/exercise/eventshuffle/controller/EventControllerTests.java.
 
-Tests can be run with: 
+Tests can be run with:
 - `./mvnw test`
+
+### Testing status 
+- Service layer: most methods covered with unit tests 
+- Controller layer: some isolated test cases 
+- Dao layer: missing 
+- E2E: 1 complete scenario
+- No separate integration testing
 
 ## API 
 The application exposes REST endpoints to manage events and votes. All endpoints can be explored interactively via Swagger: http://localhost:8080/swagger-ui/index.html
@@ -66,24 +72,28 @@ eventshuffle/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │    └── exercise.eventshuffle/
-│   │   │        ├── controller/
-│   │   │        ├── dao/
-│   │   │        ├── dto/
-│   │   │        ├── entity/
-│   │   │        ├── exception/
-│   │   │        ├── service/
-│   │   │        └── EventshuffleApplication.java
+│   │   │    └── exercise/
+│   │   │        └── eventshuffle/
+│   │   │            ├── controller/
+│   │   │            ├── dao/
+│   │   │            ├── dto/
+│   │   │            ├── entity/
+│   │   │            ├── exception/
+│   │   │            ├── service/
+│   │   │            └── EventshuffleApplication.java
 │   │   └── resources/
-│   └──tests/
+│   └── test/
 │       ├── java/
-│       │    └── exercise.eventshuffle/
-│       │        ├── controller/
-│       │        ├── util/
-│       │        └── EventshuffleApplicationTests.java
-└── docker-compose.yml
-└── pom.xml
+│       │    └── exercise/
+│       │        └── eventshuffle/
+│       │            ├── controller/
+│       │            ├── util/
+│       │            ├── e2e/
+│       │            └── EventshuffleApplicationTests.java
+├── docker-compose.yml
+├── pom.xml
 └── README.md
+
 ```
 
 
